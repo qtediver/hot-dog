@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="汉代绿釉陶狗民族文化互动体验">
+    <title>汉釉小守 · 汉代绿釉陶狗文化互动</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
+            background: #f3ebd8;
+            color: #2d2a23;
+            overflow-x: hidden;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        /* 单页全屏布局 */
+        .page {
+            width: 100%;
+            min-height: 100vh;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 28px;
+            position: relative;
+        }
+
+        /* ========== 1. 封面页 ========== */
+        .page-cover {
+            background: linear-gradient(180deg, #e8dcc0 0%, #d6c7a3 100%);
+        }
+
+        .main-title {
+            font-size: 48px;
+            font-weight: 700;
+            color: #2c3e22;
+            letter-spacing: 10px;
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            margin-bottom: 20px;
+        }
+
+        .sub-title {
+            font-size: 14px;
+            color: #5a6b4e;
+            letter-spacing: 3px;
+            margin-bottom: 70px;
+        }
+
+        .start-btn {
+            padding: 12px 42px;
+            border: 1px solid #2c3e22;
+            border-radius: 30px;
+            background: transparent;
+            color: #2c3e22;
+            font-size: 16px;
+            letter-spacing: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .start-btn:active {
+            background: #2c3e22;
+            color: #f3ebd8;
+        }
+
+        .page-tip {
+            position: absolute;
+            bottom: 24px;
+            font-size: 12px;
+            color: #8b7d5a;
+            letter-spacing: 1px;
+        }
+
+        /* ========== 通用标题 ========== */
+        .section-title {
+            font-size: 22px;
+            color: #2c3e22;
+            letter-spacing: 3px;
+            margin-bottom: 32px;
+            font-weight: 600;
+        }
+
+        /* ========== 2. 序章页 ========== */
+        .intro-img-box {
+            width: 180px;
+            height: 220px;
+            border: 1px solid #c2b48e;
+            border-radius: 8px;
+            background: #efe8d4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8b7d5a;
+            font-size: 13px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .intro-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .intro-text {
+            font-size: 15px;
+            line-height: 2;
+            color: #3d3a31;
+            text-align: justify;
+            max-width: 310px;
+        }
+
+        /* ========== 陶狗展示区 ========== */
+        .dog-stage {
+            width: 240px;
+            height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 36px;
+            position: relative;
+        }
+
+        /* CSS绘制陶狗 可替换为图片 */
+        .dog {
+            position: relative;
+            width: 150px;
+            height: 190px;
+            transition: all 0.5s ease;
+        }
+
+        .dog-body {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 128px;
+            height: 108px;
+            border-radius: 54px 54px 44px 44px;
+            transition: background 0.5s ease;
+        }
+
+        .dog-head {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 96px;
+            height: 96px;
+            border-radius: 48px;
+            transition: background 0.5s ease;
+        }
+
+        .dog-ear {
+            position: absolute;
+            top: -18px;
+            width: 24px;
+            height: 44px;
+            border-radius: 12px 12px 0 0;
+            transition: background 0.5s ease;
+        }
+
+        .dog-ear.left { left: 16px; transform: rotate(-12deg); }
+        .dog-ear.right { right: 16px; transform: rotate(12deg); }
+
+        .dog-collar {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 106px;
+            height: 14px;
+            border-radius: 7px;
+            transition: all 0.3s ease;
+        }
+
+        .dog-leg {
+            position: absolute;
+            bottom: 0;
+            width: 20px;
+            height: 44px;
+            border-radius: 10px;
+            background: #c4956a;
+        }
+
+        .dog-leg.fl { left: 26px; }
+        .dog-leg.fr { right: 26px; }
+        .dog-leg.bl { left: 42px; }
+        .dog-leg.br { right: 42px; }
+
+        /* 釉色效果 */
+        .glaze-clay .dog-body,
+        .glaze-clay .dog-head,
+        .glaze-clay .dog-ear {
+            background: linear-gradient(180deg, #d9ad7a 0%, #c99a68 100%);
+        }
+
+        .glaze-green .dog-body,
+        .glaze-green .dog-head,
+        .glaze-green .dog-ear {
+            background: linear-gradient(180deg, #7aa02a 0%, #5d7d1c 100%);
+        }
+
+        .glaze-yellow .dog-body,
+        .glaze-yellow .dog-head,
+        .glaze-yellow .dog-ear {
+            background: linear-gradient(180deg, #a8d43c 0%, #86b320 100%);
+        }
+
+        /* 纹饰效果 */
+        .pattern-plain .dog-collar {
+            background: #8b4513;
+        }
+
+        .pattern-cloud .dog-collar {
+            background: repeating-linear-gradient(90deg, 
+                #8b4513 0px, #8b4513 9px, 
+                #a85a20 9px, #a85a20 18px);
+        }
+
+        .pattern-whorl .dog-collar {
+            background: radial-gradient(circle, #a85a20 25%, #8b4513 25%, #8b4513 50%, #a85a20 50%);
+            background-size: 14px 14px;
+        }
+
+        /* ========== 选项按钮组 ========== */
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .option-btn {
+            padding: 9px 22px;
+            border: 1px solid #6b8e23;
+            border-radius: 22px;
+            background: transparent;
+            color: #2c3e22;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .option-btn.active {
+            background: #6b8e23;
+            color: #fff;
+        }
+
+        .next-btn {
+            margin-top: 16px;
+            padding: 11px 40px;
+            background: #2c3e22;
+            color: #f3ebd8;
+            border: none;
+            border-radius: 26px;
+            font-size: 15px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .next-btn:active {
+            transform: scale(0.98);
+        }
+
+        .step-label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 14px;
+        }
+
+        /* ========== 科普弹窗 ========== */
+        .tooltip {
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: 1px solid #d6c7a3;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            font-size: 12px;
+            line-height: 1.6;
+            max-width: 220px;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+
+        .tooltip.show {
+            opacity: 1;
+        }
+
+        /* ========== 守护卡 ========== */
+        .guard-card {
+            width: 290px;
+            padding: 32px 24px;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+            text-align: center;
+            border: 1px solid #e8dcc0;
+        }
+
+        .card-title {
+            font-size: 18px;
+            color: #2c3e22;
+            margin-bottom: 24px;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        .card-dog-wrap {
+            height: 190px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .card-desc {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+
+        .card-slogan {
+            font-size: 16px;
+            color: #2c3e22;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-top: 8px;
+        }
+
+        .save-tip {
+            font-size: 12px;
+            color: #888;
+            margin-top: 20px;
+        }
+
+        /* ========== 尾章 ========== */
+        .page-end {
+            background: linear-gradient(180deg, #d6c7a3 0%, #e8dcc0 100%);
+        }
+
+        .end-text {
+            font-size: 16px;
+            line-height: 2.4;
+            text-align: center;
+            color: #2c3e22;
+            margin-bottom: 60px;
+            letter-spacing: 1px;
+        }
+
+        .replay-btn {
+            padding: 10px 34px;
+            border: 1px solid #2c3e22;
+            border-radius: 26px;
+            background: transparent;
+            color: #2c3e22;
+            font-size: 14px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .replay-btn:active {
+            background: #2c3e22;
+            color: #f3ebd8;
+        }
+    </style>
+</head>
+<body>
+    <!-- 1. 封面页 -->
+    <section class="page page-cover" id="page1">
+        <h1 class="main-title">汉釉小守</h1>
+        <p class="sub-title">汉代绿釉陶狗 · 民族工艺互动体验</p>
+        <button class="start-btn" onclick="goToPage(2)">开启守护</button>
+        <div class="page-tip">上滑翻页 探索千年陶韵</div>
+    </section>
+
+    <!-- 2. 序章页 -->
+    <section class="page" id="page2">
+        <h2 class="section-title">物 · 千年陶韵</h2>
+        <div class="intro-img-box">
+            <!-- 替换为文物实拍图：<img src="图片路径" alt="汉代绿釉立姿陶狗"> -->
+            可替换文物实拍图
+        </div>
+        <div class="intro-text">
+            绿釉立姿陶狗<br>
+            汉代（公元前206—公元220年）<br><br>
+            中国低温铅釉陶代表器物，<br>
+            以铜为釉料着色剂，<br>
+            经氧化焰烧成翠色釉面。<br>
+            是汉代制陶智慧与市井民俗<br>
+            留存至今的实物见证。
+        </div>
+        <div class="page-tip">上滑继续</div>
+    </section>
+
+    <!-- 3. 上釉互动页 -->
+    <section class="page" id="page3">
+        <h2 class="section-title">工 · 施釉成器</h2>
+        <div class="dog-stage">
+            <div class="tooltip" id="glazeTooltip"></div>
+            <div class="dog glaze-clay" id="dog1">
+                <div class="dog-ear left"></div>
+                <div class="dog-ear right"></div>
+                <div class="dog-head"></div>
+                <div class="dog-collar pattern-plain" id="collar1"></div>
+                <div class="dog-body"></div>
+                <div class="dog-leg fl"></div>
+                <div class="dog-leg fr"></div>
+                <div class="dog-leg bl"></div>
+                <div class="dog-leg br"></div>
+            </div>
+        </div>
+        <p class="step-label">选择釉色</p>
+        <div class="btn-group">
+            <button class="option-btn active" data-glaze="clay" data-tip="素陶胎：汉代普通民用陶的基础形态，质朴无华">素陶胎</button>
+            <button class="option-btn" data-glaze="green" data-tip="铜绿釉：汉代最具代表性的铅釉工艺，以铜为着色剂">铜绿釉</button>
+            <button class="option-btn" data-glaze="yellow" data-tip="黄绿釉：低温铅釉变体，釉色随烧制温度变化">黄绿釉</button>
+        </div>
+        <button class="next-btn" onclick="goToPage(4)">下一步 · 饰纹</button>
+    </section>
+
+    <!-- 4. 饰纹互动页 -->
+    <section class="page" id="page4">
+        <h2 class="section-title">纹 · 饰以吉祥</h2>
+        <div class="dog-stage">
+            <div class="tooltip" id="patternTooltip"></div>
+            <div class="dog glaze-clay" id="dog2">
+                <div class="dog-ear left"></div>
+                <div class="dog-ear right"></div>
+                <div class="dog-head"></div>
+                <div class="dog-collar pattern-plain" id="collar2"></div>
+                <div class="dog-body"></div>
+                <div class="dog-leg fl"></div>
+                <div class="dog-leg fr"></div>
+                <div class="dog-leg bl"></div>
+                <div class="dog-leg br"></div>
+            </div>
+        </div>
+        <p class="step-label">选择项圈纹饰</p>
+        <div class="btn-group">
+            <button class="option-btn active" data-pattern="plain" data-tip="素面项圈：汉代家养犬常见配置，还原市井寻常生活">素面项圈</button>
+            <button class="option-btn" data-pattern="cloud" data-tip="卷云纹：汉代经典吉祥纹样，象征祥云纳福">卷云纹</button>
+            <button class="option-btn" data-pattern="whorl" data-tip="圆涡纹：源自水涡旋纹，风格古朴生动">圆涡纹</button>
+        </div>
+        <button class="next-btn" onclick="generateCard()">铸成守护</button>
+    </section>
+
+    <!-- 5. 生成结果页 -->
+    <section class="page" id="page5">
+        <h2 class="section-title">成 · 专属守护</h2>
+        <div class="guard-card">
+            <div class="card-title">你的汉釉守护卡</div>
+            <div class="card-dog-wrap">
+                <div class="dog glaze-clay" id="cardDog">
+                    <div class="dog-ear left"></div>
+                    <div class="dog-ear right"></div>
+                    <div class="dog-head"></div>
+                    <div class="dog-collar pattern-plain" id="cardCollar"></div>
+                    <div class="dog-body"></div>
+                    <div class="dog-leg fl"></div>
+                    <div class="dog-leg fr"></div>
+                    <div class="dog-leg bl"></div>
+                    <div class="dog-leg br"></div>
+                </div>
+            </div>
+            <div class="card-desc" id="cardDesc">釉色：素陶胎<br>纹饰：素面项圈</div>
+            <div class="card-slogan" id="cardSlogan">守一方烟火，承千年匠心</div>
+        </div>
+        <p class="save-tip">长按屏幕可保存图片分享</p>
+        <button class="next-btn" style="margin-top:28px;" onclick="goToPage(6)">完成</button>
+    </section>
+
+    <!-- 6. 尾章页 -->
+    <section class="page page-end" id="page6">
+        <div class="end-text">
+            一尊陶狗，藏着汉代的烟火<br>
+            一份匠心，跨越千年的传承<br><br>
+            让文物活起来<br>
+            让民族文化被看见
+        </div>
+        <button class="replay-btn" onclick="goToPage(1)">重新体验</button>
+    </section>
+
+    <script>
+        // 全局状态
+        let currentGlaze = 'clay';
+        let currentPattern = 'plain';
+
+        // 文案映射
+        const glazeName = { clay: '素陶胎', green: '铜绿釉', yellow: '黄绿釉' };
+        const patternName = { plain: '素面项圈', cloud: '卷云纹', whorl: '圆涡纹' };
+
+        // 组合吉祥语
+        const sloganMap = {
+            'clay-plain': '守质朴本心，护日常平安',
+            'clay-cloud': '祥云绕身，岁岁安宁',
+            'clay-whorl': '流转顺遂，福运绵长',
+            'green-plain': '翠釉承匠心，烟火守千年',
+            'green-cloud': '青云护佑，万事顺意',
+            'green-whorl': '翠色生福，圆满安康',
+            'yellow-plain': '暖釉藏温，家宅安宁',
+            'yellow-cloud': '祥云映瑞，福泽绵长',
+            'yellow-whorl': '岁稔年丰，四时顺遂'
+        };
+
+        // 平滑跳转到指定页面
+        function goToPage(num) {
+            document.getElementById('page' + num).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 显示科普弹窗
+        function showTooltip(el, text) {
+            el.textContent = text;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 2800);
+        }
+
+        // 釉色选择交互
+        document.querySelectorAll('[data-glaze]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // 切换按钮状态
+                document.querySelectorAll('[data-glaze]').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                currentGlaze = this.dataset.glaze;
+                const tipText = this.dataset.tip;
+
+                // 同步所有陶狗釉色
+                document.querySelectorAll('.dog').forEach(dog => {
+                    dog.classList.remove('glaze-clay', 'glaze-green', 'glaze-yellow');
+                    dog.classList.add('glaze-' + currentGlaze);
+                });
+
+                // 弹出科普
+                showTooltip(document.getElementById('glazeTooltip'), tipText);
+            });
+        });
+
+        // 纹饰选择交互
+        document.querySelectorAll('[data-pattern]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // 切换按钮状态
+                document.querySelectorAll('[data-pattern]').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                currentPattern = this.dataset.pattern;
+                const tipText = this.dataset.tip;
+
+                // 同步所有项圈纹饰
+                document.querySelectorAll('.dog-collar').forEach(collar => {
+                    collar.classList.remove('pattern-plain', 'pattern-cloud', 'pattern-whorl');
+                    collar.classList.add('pattern-' + currentPattern);
+                });
+
+                // 弹出科普
+                showTooltip(document.getElementById('patternTooltip'), tipText);
+            });
+        });
+
+        // 生成守护卡
+        function generateCard() {
+            // 更新卡片文案
+            document.getElementById('cardDesc').innerHTML = 
+                `釉色：${glazeName[currentGlaze]}<br>纹饰：${patternName[currentPattern]}`;
+            
+            // 更新对应吉祥语
+            const key = `${currentGlaze}-${currentPattern}`;
+            document.getElementById('cardSlogan').textContent = sloganMap[key] || '守一方烟火，承千年匠心';
+
+            // 跳转结果页
+            goToPage(5);
+        }
+
+        // 禁止双指缩放
+        document.addEventListener('gesturestart', e => e.preventDefault());
+    </script>
+</body>
+</html>
